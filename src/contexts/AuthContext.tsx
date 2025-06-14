@@ -33,20 +33,49 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Check if user has Stripe customer record
+  const checkStripeCustomer = async (userId: string) => {
+    try {
+      const { data: customer } = await supabase
+        .from('customers')
+        .select('stripe_customer_id')
+        .eq('id', userId)
+        .single();
+      
+      // Customer will be created when they first attempt to purchase
+      return customer?.stripe_customer_id;
+    } catch (error) {
+      console.error('Error checking Stripe customer:', error);
+      return null;
+    }
+  };
+
   useEffect(() => {
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      
+      // Check for Stripe customer if user is logged in
+      if (session?.user) {
+        await checkStripeCustomer(session.user.id);
+      }
+      
       setLoading(false);
     });
 
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
+      
+      // Check for Stripe customer on auth state change
+      if (session?.user && _event === 'SIGNED_IN') {
+        await checkStripeCustomer(session.user.id);
+      }
+      
       setLoading(false);
     });
 

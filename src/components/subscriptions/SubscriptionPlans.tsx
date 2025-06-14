@@ -13,6 +13,7 @@ import {
   Switch,
   FormControlLabel,
   Paper,
+  CircularProgress,
 } from '@mui/material';
 import {
   Check,
@@ -21,6 +22,7 @@ import {
   Rocket,
 } from '@mui/icons-material';
 import { colors } from '../../theme/theme';
+import { createCheckoutSession } from '../../services/stripe';
 
 interface PlanFeature {
   name: string;
@@ -105,9 +107,10 @@ interface PlanCardProps {
   isAnnual: boolean;
   onSelect: (planId: string) => void;
   currentPlan?: string;
+  loading?: boolean;
 }
 
-const PlanCard: React.FC<PlanCardProps> = ({ plan, isAnnual, onSelect, currentPlan }) => {
+const PlanCard: React.FC<PlanCardProps> = ({ plan, isAnnual, onSelect, currentPlan, loading }) => {
   const price = isAnnual ? plan.annualPrice : plan.monthlyPrice;
   const monthlyPrice = isAnnual ? plan.annualPrice / 12 : plan.monthlyPrice;
   const savings = isAnnual ? ((plan.monthlyPrice * 12 - plan.annualPrice) / (plan.monthlyPrice * 12) * 100) : 0;
@@ -284,7 +287,7 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, isAnnual, onSelect, currentPl
         <Button
           fullWidth
           variant={isCurrent ? 'outlined' : 'contained'}
-          disabled={isCurrent}
+          disabled={isCurrent || loading}
           onClick={() => onSelect(plan.id)}
           sx={{
             py: 1.5,
@@ -304,7 +307,7 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, isAnnual, onSelect, currentPl
             transition: 'all 0.2s ease',
           }}
         >
-          {isCurrent ? 'Current Plan' : `Choose ${plan.name}`}
+          {loading ? <CircularProgress size={20} /> : (isCurrent ? 'Current Plan' : `Choose ${plan.name}`)}
         </Button>
       </CardContent>
     </Card>
@@ -314,10 +317,18 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, isAnnual, onSelect, currentPl
 export const SubscriptionPlans: React.FC = () => {
   const [isAnnual, setIsAnnual] = useState(false);
   const [currentPlan] = useState('professional'); // Mock current plan
+  const [loading, setLoading] = useState(false);
 
-  const handlePlanSelect = (planId: string) => {
-    console.log('Selected plan:', planId);
-    // TODO: Integrate with Stripe checkout
+  const handlePlanSelect = async (planId: string) => {
+    try {
+      setLoading(true);
+      await createCheckoutSession(planId, isAnnual);
+    } catch (error) {
+      console.error('Error selecting plan:', error);
+      // TODO: Show error message to user
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -422,6 +433,7 @@ export const SubscriptionPlans: React.FC = () => {
             isAnnual={isAnnual}
             onSelect={handlePlanSelect}
             currentPlan={currentPlan}
+            loading={loading}
           />
         ))}
       </Box>
