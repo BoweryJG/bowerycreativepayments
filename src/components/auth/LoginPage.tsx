@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Card,
@@ -6,30 +6,16 @@ import {
   Typography,
   Button,
   Container,
-  Stack,
-  Divider,
   Paper,
+  Alert,
 } from '@mui/material';
-import { Google, Facebook } from '@mui/icons-material';
-import { signInWithGoogle, signInWithFacebook } from '../../lib/supabase';
+import { Login } from '@mui/icons-material';
 import { colors } from '../../theme/theme';
+import GlobalAuthModal from './GlobalAuthModal';
+import { useAuthModal } from '../../hooks/useAuthModal';
 
 export const LoginPage: React.FC = () => {
-  const handleGoogleSignIn = async () => {
-    try {
-      await signInWithGoogle();
-    } catch (error) {
-      console.error('Google sign in error:', error);
-    }
-  };
-
-  const handleFacebookSignIn = async () => {
-    try {
-      await signInWithFacebook();
-    } catch (error) {
-      console.error('Facebook sign in error:', error);
-    }
-  };
+  const { isAuthModalOpen, openAuthModal, closeAuthModal, handleAuthSuccess } = useAuthModal();
 
   return (
     <Box
@@ -127,10 +113,30 @@ export const LoginPage: React.FC = () => {
               sx={{
                 color: colors.racingSilver,
                 lineHeight: 1.6,
+                mb: 2,
               }}
             >
               Access your subscription management, payment history, and campaign credits
             </Typography>
+            
+            <Alert 
+              severity="info" 
+              sx={{ 
+                backgroundColor: `${colors.champagne}20`,
+                border: `1px solid ${colors.champagne}40`,
+                color: colors.arctic,
+                '& .MuiAlert-icon': {
+                  color: colors.champagne
+                }
+              }}
+            >
+              <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                Restricted Access Portal
+              </Typography>
+              <Typography variant="caption" sx={{ display: 'block', mt: 0.5, opacity: 0.9 }}>
+                Access limited to authorized Bowery Creative accounts only
+              </Typography>
+            </Alert>
           </Paper>
 
           {/* Login Form */}
@@ -147,72 +153,28 @@ export const LoginPage: React.FC = () => {
               Sign in to your account
             </Typography>
 
-            <Stack spacing={3}>
-              <Button
-                variant="contained"
-                size="large"
-                fullWidth
-                startIcon={<Google />}
-                onClick={handleGoogleSignIn}
-                sx={{
-                  py: 1.5,
-                  background: colors.champagne,
-                  color: colors.obsidian,
-                  fontWeight: 600,
-                  '&:hover': {
-                    background: '#e4c547',
-                    transform: 'translateY(-1px)',
-                    boxShadow: `0 8px 25px ${colors.champagne}40`,
-                  },
-                  transition: 'all 0.3s ease',
-                }}
-              >
-                Continue with Google
-              </Button>
-
-              <Box sx={{ position: 'relative' }}>
-                <Divider
-                  sx={{
-                    '&::before, &::after': {
-                      borderColor: colors.graphite,
-                    },
-                  }}
-                >
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      color: colors.racingSilver,
-                      px: 2,
-                      background: colors.carbon,
-                    }}
-                  >
-                    OR
-                  </Typography>
-                </Divider>
-              </Box>
-
-              <Button
-                variant="outlined"
-                size="large"
-                fullWidth
-                startIcon={<Facebook />}
-                onClick={handleFacebookSignIn}
-                sx={{
-                  py: 1.5,
-                  borderColor: colors.champagne,
-                  color: colors.champagne,
-                  fontWeight: 600,
-                  '&:hover': {
-                    borderColor: colors.champagne,
-                    background: `${colors.champagne}10`,
-                    transform: 'translateY(-1px)',
-                  },
-                  transition: 'all 0.3s ease',
-                }}
-              >
-                Continue with Facebook
-              </Button>
-            </Stack>
+            <Button
+              variant="contained"
+              size="large"
+              fullWidth
+              startIcon={<Login />}
+              onClick={openAuthModal}
+              sx={{
+                py: 1.5,
+                background: colors.champagne,
+                color: colors.obsidian,
+                fontWeight: 600,
+                fontSize: '1.1rem',
+                '&:hover': {
+                  background: '#e4c547',
+                  transform: 'translateY(-1px)',
+                  boxShadow: `0 8px 25px ${colors.champagne}40`,
+                },
+                transition: 'all 0.3s ease',
+              }}
+            >
+              Access Payment Portal
+            </Button>
 
             <Typography
               variant="body2"
@@ -247,6 +209,13 @@ export const LoginPage: React.FC = () => {
           © 2025 Bowery Creative. Engineering Intelligence.
         </Typography>
       </Container>
+
+      {/* Auth Modal */}
+      <GlobalAuthModal 
+        open={isAuthModalOpen} 
+        onClose={closeAuthModal} 
+        onSuccess={handleAuthSuccess}
+      />
     </Box>
   );
 };
