@@ -21,11 +21,14 @@ export const LoginPage: React.FC = () => {
     <Box
       sx={{
         minHeight: '100vh',
+        width: '100%',
         background: `linear-gradient(135deg, ${colors.obsidian} 0%, ${colors.carbon} 100%)`,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         position: 'relative',
+        px: { xs: 2, sm: 3 },
+        py: { xs: 3, sm: 4 },
         '&::before': {
           content: '""',
           position: 'absolute',
@@ -37,7 +40,7 @@ export const LoginPage: React.FC = () => {
         },
       }}
     >
-      <Container maxWidth="sm">
+      <Container maxWidth="sm" sx={{ width: '100%', maxWidth: { xs: '100%', sm: '480px' } }}>
         <Card
           elevation={0}
           sx={{
@@ -52,7 +55,7 @@ export const LoginPage: React.FC = () => {
           <Paper
             sx={{
               background: `linear-gradient(135deg, ${colors.carbon} 0%, ${colors.graphite} 100%)`,
-              p: 4,
+              p: { xs: 3, sm: 4 },
               textAlign: 'center',
               borderBottom: `1px solid ${colors.graphite}`,
             }}
@@ -60,8 +63,8 @@ export const LoginPage: React.FC = () => {
             <Box sx={{ mb: 3 }}>
               <Box
                 sx={{
-                  width: 64,
-                  height: 64,
+                  width: { xs: 56, sm: 64 },
+                  height: { xs: 56, sm: 64 },
                   border: `2px solid ${colors.champagne}`,
                   borderRadius: '50%',
                   display: 'flex',
@@ -78,6 +81,7 @@ export const LoginPage: React.FC = () => {
                     color: colors.champagne,
                     fontWeight: 600,
                     fontFamily: '"Inter", sans-serif',
+                    fontSize: { xs: '2rem', sm: '2.5rem' },
                   }}
                 >
                   B
@@ -91,6 +95,7 @@ export const LoginPage: React.FC = () => {
                   mb: 1,
                   fontFamily: '"Inter", sans-serif',
                   letterSpacing: '0.02em',
+                  fontSize: { xs: '1.75rem', sm: '2.125rem' },
                 }}
               >
                 BOWERY
@@ -102,7 +107,7 @@ export const LoginPage: React.FC = () => {
                   fontWeight: 300,
                   letterSpacing: '0.1em',
                   textTransform: 'uppercase',
-                  fontSize: '0.875rem',
+                  fontSize: { xs: '0.75rem', sm: '0.875rem' },
                 }}
               >
                 Payment Portal
@@ -114,6 +119,7 @@ export const LoginPage: React.FC = () => {
                 color: colors.racingSilver,
                 lineHeight: 1.6,
                 mb: 2,
+                fontSize: { xs: '0.875rem', sm: '1rem' },
               }}
             >
               Access your subscription management, payment history, and campaign credits
@@ -140,7 +146,7 @@ export const LoginPage: React.FC = () => {
           </Paper>
 
           {/* Login Form */}
-          <CardContent sx={{ p: 4 }}>
+          <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
             <Typography
               variant="h6"
               sx={{

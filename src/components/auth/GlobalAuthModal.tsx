@@ -233,7 +233,7 @@ const GlobalAuthModal: React.FC<GlobalAuthModalProps> = ({ open, onClose, onSucc
           fontWeight: 300,
           letterSpacing: '0.1em',
           textTransform: 'uppercase',
-          fontSize: '0.875rem',
+          fontSize: { xs: '0.75rem', sm: '0.875rem' },
         }}>
           Payment Portal
         </Typography>
