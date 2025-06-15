@@ -34,7 +34,8 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
 
 // Allowed user emails - restrict to specific users only
 const ALLOWED_USERS = [
-  'jbowery@gmail.com', // Primary user
+  'jasonwilliamgolden@gmail.com', // Primary user
+  'jgolden@bowerycreativeagency.com', // Alternative email
   // Add more allowed emails here if needed
 ];
 
