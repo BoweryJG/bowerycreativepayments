@@ -24,7 +24,6 @@ import {
   History,
   Settings,
   ExitToApp,
-  AccountCircle,
   CreditCard,
   Subscriptions,
 } from '@mui/icons-material';
@@ -49,6 +48,25 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const { user, signOut } = useAuth();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  // Helper function to get initials from name or email
+  const getInitials = (name?: string | null): string => {
+    if (!name) return '?';
+    
+    // If it's an email, just use first letter
+    if (name.includes('@')) {
+      return name.charAt(0).toUpperCase();
+    }
+    
+    // If it's a full name, get first letter of first and last name
+    const names = name.trim().split(' ');
+    if (names.length >= 2) {
+      return `${names[0].charAt(0)}${names[names.length - 1].charAt(0)}`.toUpperCase();
+    }
+    
+    // Single name, just first letter
+    return name.charAt(0).toUpperCase();
+  };
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -199,16 +217,18 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Avatar
+              src={user?.user_metadata?.avatar_url || user?.user_metadata?.picture}
               sx={{
                 bgcolor: colors.champagne,
                 color: colors.obsidian,
-                width: 32,
-                height: 32,
+                width: 40,
+                height: 40,
                 fontSize: '0.875rem',
                 fontWeight: 600,
+                border: `2px solid ${colors.champagne}`,
               }}
             >
-              {user?.email?.charAt(0).toUpperCase()}
+              {getInitials(user?.user_metadata?.full_name || user?.email)}
             </Avatar>
             <Box sx={{ flex: 1, minWidth: 0 }}>
               <Typography
@@ -284,8 +304,22 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             aria-haspopup="true"
             onClick={handleMenu}
             color="inherit"
+            sx={{ p: 0.5 }}
           >
-            <AccountCircle />
+            <Avatar
+              src={user?.user_metadata?.avatar_url || user?.user_metadata?.picture}
+              sx={{
+                bgcolor: colors.champagne,
+                color: colors.obsidian,
+                width: 36,
+                height: 36,
+                fontSize: '0.875rem',
+                fontWeight: 600,
+                border: `2px solid ${colors.champagne}`,
+              }}
+            >
+              {getInitials(user?.user_metadata?.full_name || user?.email)}
+            </Avatar>
           </IconButton>
           
           <Menu
