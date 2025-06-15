@@ -27,11 +27,6 @@ interface GlobalAuthModalProps {
   onSuccess?: () => void;
 }
 
-// Shimmer animation
-const shimmer = keyframes`
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-`;
 
 // Floating animation
 const float = keyframes`
