@@ -8,7 +8,7 @@ interface AuthContextType {
   loading: boolean;
   isAllowed: boolean;
   signOut: () => Promise<void>;
-  signInWithProvider: (provider: 'google' | 'facebook') => Promise<void>;
+  signInWithProvider: (provider: 'google' | 'facebook') => Promise<any>;
   signInWithEmail: (email: string, password: string) => Promise<void>;
   signUpWithEmail: (email: string, password: string) => Promise<void>;
 }
