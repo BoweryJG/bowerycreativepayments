@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
 import { Elements } from '@stripe/react-stripe-js';
@@ -8,10 +9,13 @@ import { DashboardLayout } from './components/layout/DashboardLayout';
 import { Dashboard } from './components/dashboard/Dashboard';
 import { SubscriptionPlans } from './components/subscriptions/SubscriptionPlans';
 import { CreditPackages } from './components/credits/CreditPackages';
+import { LoginPage } from './components/auth/LoginPage';
+import AuthCallback from './components/auth/AuthCallback';
 import { theme } from './theme/theme';
 import { stripePromise } from './lib/stripe';
 
-function App() {
+// Dashboard container that handles internal navigation
+function DashboardContainer() {
   const [currentPage, setCurrentPage] = useState('dashboard');
 
   const renderPage = () => {
@@ -32,20 +36,43 @@ function App() {
   };
 
   return (
+    <DashboardLayout
+      currentPage={currentPage}
+      onPageChange={setCurrentPage}
+    >
+      {renderPage()}
+    </DashboardLayout>
+  );
+}
+
+function App() {
+  return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Elements stripe={stripePromise}>
-        <AuthProvider>
-          <ProtectedRoute>
-            <DashboardLayout
-              currentPage={currentPage}
-              onPageChange={setCurrentPage}
-            >
-              {renderPage()}
-            </DashboardLayout>
-          </ProtectedRoute>
-        </AuthProvider>
-      </Elements>
+      <Router>
+        <Elements stripe={stripePromise}>
+          <AuthProvider>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/" element={<LoginPage />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
+              
+              {/* Protected routes */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <DashboardContainer />
+                  </ProtectedRoute>
+                }
+              />
+              
+              {/* Redirect any unknown routes to home */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </AuthProvider>
+        </Elements>
+      </Router>
     </ThemeProvider>
   );
 }

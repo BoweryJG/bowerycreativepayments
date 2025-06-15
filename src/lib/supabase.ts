@@ -55,7 +55,7 @@ export const getAppUrl = () => {
 // Get redirect URL for OAuth
 export const getRedirectUrl = (returnPath?: string) => {
   const baseUrl = getAppUrl();
-  return returnPath ? `${baseUrl}${returnPath}` : `${baseUrl}/dashboard`;
+  return returnPath ? `${baseUrl}${returnPath}` : `${baseUrl}/auth/callback`;
 };
 
 // Check if user is allowed to access the system
