@@ -55,12 +55,12 @@ const GlobalAuthModal: React.FC<GlobalAuthModalProps> = ({ open, onClose, onSucc
     try {
       setIsLoading(true);
       setError(null);
-      await signInWithProvider(provider);
-      onSuccess?.();
-      onClose();
+      const result = await signInWithProvider(provider);
+      console.log('Auth result:', result);
+      // Don't close modal or call success here - let OAuth redirect handle it
     } catch (error: any) {
+      console.error('Auth error:', error);
       setError(error.message || 'Authentication failed');
-    } finally {
       setIsLoading(false);
     }
   };

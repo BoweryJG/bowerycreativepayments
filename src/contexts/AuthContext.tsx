@@ -123,10 +123,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const handleSignInWithProvider = async (provider: 'google' | 'facebook') => {
-    if (provider === 'google') {
-      await signInWithGoogle();
-    } else {
-      await signInWithFacebook();
+    try {
+      let result;
+      if (provider === 'google') {
+        result = await signInWithGoogle();
+      } else {
+        result = await signInWithFacebook();
+      }
+      console.log('Provider sign in result:', result);
+      return result;
+    } catch (error) {
+      console.error('Provider sign in error:', error);
+      throw error;
     }
   };
 

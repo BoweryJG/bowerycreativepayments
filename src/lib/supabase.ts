@@ -65,22 +65,38 @@ export const isUserAllowed = (email: string | undefined): boolean => {
 };
 
 // Auth helpers with user restrictions
-export const signInWithGoogle = () => {
-  return supabase.auth.signInWithOAuth({
+export const signInWithGoogle = async () => {
+  const redirectUrl = getRedirectUrl();
+  console.log('Google OAuth redirect URL:', redirectUrl);
+  
+  const result = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: getRedirectUrl()
+      redirectTo: redirectUrl,
+      queryParams: {
+        access_type: 'offline',
+        prompt: 'consent',
+      }
     }
   });
+  
+  console.log('Google OAuth result:', result);
+  return result;
 };
 
-export const signInWithFacebook = () => {
-  return supabase.auth.signInWithOAuth({
+export const signInWithFacebook = async () => {
+  const redirectUrl = getRedirectUrl();
+  console.log('Facebook OAuth redirect URL:', redirectUrl);
+  
+  const result = await supabase.auth.signInWithOAuth({
     provider: 'facebook',
     options: {
-      redirectTo: getRedirectUrl()
+      redirectTo: redirectUrl
     }
   });
+  
+  console.log('Facebook OAuth result:', result);
+  return result;
 };
 
 export const signInWithEmail = (email: string, password: string) => {
